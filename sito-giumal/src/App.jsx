@@ -160,30 +160,38 @@ function Hero() {
       </motion.div>
 
       {/* 4. IL TESTO PRINCIPALE */}
-      <div className="relative z-10 flex flex-col items-center px-5 text-center mix-blend-plus-lighter">
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          whileHover={{
-            x: [0, -5, 5, -5, 5, 0],
-            y: [0, -2, 2, -2, 2, 0],
-            skewX: [0, -2, 2, -2, 2, 0],
-            scale: [1, 1.02, 0.98, 1.02, 0.98, 1],
-            filter: ["blur(0px)", "blur(2px)", "blur(0px)", "blur(1px)", "blur(0px)"],
-            textShadow: [
-              "0 0 25px rgba(139,92,246,0.3)",
-              "2px 0 rgba(255,0,0,0.8), -2px 0 rgba(0,255,255,0.8)",
-              "0 0 25px rgba(139,92,246,0.3)",
-              "3px 0 rgba(255,0,0,0.6), -3px 0 rgba(0,255,255,0.6)",
-              "0 0 25px rgba(139,92,246,0.3)"
-            ]
-          }}
-          transition={{ duration: 0.3 }}
-          className="font-display text-[15vw] font-bold leading-none text-white md:text-[10vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)] cursor-pointer"
-        >
-          GIUMAL
-        </motion.h1>
+      <div className="relative z-10 flex flex-col items-center px-5 text-center">
+        <div className="relative">
+          <img
+            src="/sfondo.png"
+            alt="Sfondo"
+            className="absolute inset-0 w-full h-full object-cover filter grayscale opacity-40 -z-10"
+          />
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            whileHover={{
+              x: [0, -10, 10, -10, 10, 0],
+              y: [0, -5, 5, -5, 5, 0],
+              skewX: [0, -5, 5, -5, 5, 0],
+              skewY: [0, -3, 3, -3, 3, 0],
+              scale: [1, 1.05, 0.95, 1.05, 0.95, 1],
+              filter: ["blur(0px)", "blur(3px)", "blur(0px)", "blur(2px)", "blur(0px)"],
+              textShadow: [
+                "0 0 25px rgba(139,92,246,0.3)",
+                "4px 0 rgba(255,0,0,0.9), -4px 0 rgba(0,255,255,0.9)",
+                "0 0 25px rgba(139,92,246,0.3)",
+                "6px 0 rgba(255,0,0,0.7), -6px 0 rgba(0,255,255,0.7)",
+                "0 0 25px rgba(139,92,246,0.3)"
+              ]
+            }}
+            transition={{ duration: 0.25 }}
+            className="font-display text-[18vw] font-bold leading-none text-white md:text-[12vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)] cursor-pointer mix-blend-plus-lighter"
+          >
+            GIUMAL
+          </motion.h1>
+        </div>
       </div>
     </section>
   );
