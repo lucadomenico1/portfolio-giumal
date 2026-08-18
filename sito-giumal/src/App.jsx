@@ -112,6 +112,8 @@ function Nav() {
 function Hero() {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
+  const [touchPosition, setTouchPosition] = React.useState({ x: 0, y: 0 });
+  const [isTouching, setIsTouching] = React.useState(false);
   
   const springX = useSpring(x, { stiffness: 50, damping: 30 });
   const springY = useSpring(y, { stiffness: 50, damping: 30 });
@@ -130,9 +132,27 @@ function Hero() {
     y.set(mouseY / height - 0.5);
   }
 
+  function handleTouchStart(e) {
+    const touch = e.touches[0];
+    setTouchPosition({ x: touch.clientX, y: touch.clientY });
+    setIsTouching(true);
+  }
+
+  function handleTouchMove(e) {
+    const touch = e.touches[0];
+    setTouchPosition({ x: touch.clientX, y: touch.clientY });
+  }
+
+  function handleTouchEnd() {
+    setIsTouching(false);
+  }
+
   return (
     <section 
       onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       className="relative flex h-[100svh] w-full items-center justify-center overflow-hidden bg-black"
     >
       {/* 1. SFONDO ANIMATO CON SFUMATURE VIOLA */}
@@ -170,7 +190,7 @@ function Hero() {
 
       {/* 2. PARTICLES EFFECT */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(50)].map((_, i) => (
+        {[...Array(window.innerWidth < 768 ? 80 : 50)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-violet-400/30 rounded-full"
@@ -192,6 +212,22 @@ function Hero() {
           />
         ))}
       </div>
+
+      {/* 3. TOUCH RIPPLE EFFECT (Mobile) */}
+      {isTouching && (
+        <motion.div
+          initial={{ scale: 0, opacity: 0.5 }}
+          animate={{ scale: 4, opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute pointer-events-none rounded-full bg-violet-500/20 blur-xl"
+          style={{
+            left: touchPosition.x - 50,
+            top: touchPosition.y - 50,
+            width: 100,
+            height: 100,
+          }}
+        />
+      )}
       
       {/* 3. ANAMORPHIC LENS FLARE */}
       <motion.div 
@@ -224,6 +260,17 @@ function Hero() {
               "0 0 25px rgba(139,92,246,0.3)"
             ],
             transition: { duration: 0.25 }
+          }}
+          whileTap={{
+            scale: 0.95,
+            rotate: [0, -5, 5, -5, 5, 0],
+            filter: ["blur(0px)", "blur(5px)", "blur(0px)"],
+            textShadow: [
+              "0 0 25px rgba(139,92,246,0.3)",
+              "8px 0 rgba(255,0,0,1), -8px 0 rgba(0,255,255,1)",
+              "0 0 25px rgba(139,92,246,0.3)"
+            ],
+            transition: { duration: 0.15 }
           }}
           className="font-display text-[18vw] font-bold leading-none text-white md:text-[12vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)] cursor-pointer"
         >
