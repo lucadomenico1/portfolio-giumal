@@ -133,17 +133,65 @@ function Hero() {
   return (
     <section 
       onMouseMove={handleMouseMove}
-      className="relative flex h-[100svh] w-full items-center justify-center overflow-hidden bg-slate-900"
+      className="relative flex h-[100svh] w-full items-center justify-center overflow-hidden bg-black"
     >
-      {/* 1. LA FOTO DI SFONDO */}
-      <img
-        src="/sfondo.png"
-        alt="Sfondo"
-        className="absolute inset-0 h-full w-full object-cover filter grayscale opacity-60"
-      />
+      {/* 1. SFONDO ANIMATO CON SFUMATURE VIOLA */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/30 via-black to-black"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/10 via-transparent to-transparent"></div>
+        
+        {/* Animated gradient orbs */}
+        <motion.div 
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-[100px]"
+        />
+        <motion.div 
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.2, 0.4, 0.2],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-600/20 rounded-full blur-[100px]"
+        />
+      </div>
 
-      {/* 2. GRADIENTE SCURO PER FAR LEGGERE IL TESTO */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue-900/40 via-slate-900/60 to-slate-900/80"></div>
+      {/* 2. PARTICLES EFFECT */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(50)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-violet-400/30 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              opacity: [0, 1, 0],
+              scale: [0, 1, 0],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 4,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
       
       {/* 3. ANAMORPHIC LENS FLARE */}
       <motion.div 
@@ -174,9 +222,9 @@ function Hero() {
               "0 0 25px rgba(139,92,246,0.3)",
               "6px 0 rgba(255,0,0,0.7), -6px 0 rgba(0,255,255,0.7)",
               "0 0 25px rgba(139,92,246,0.3)"
-            ]
+            ],
+            transition: { duration: 0.25 }
           }}
-          transition={{ duration: 0.25 }}
           className="font-display text-[18vw] font-bold leading-none text-white md:text-[12vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)] cursor-pointer"
         >
           GIUMAL
