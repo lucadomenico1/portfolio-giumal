@@ -160,15 +160,17 @@ function Hero() {
       </motion.div>
 
       {/* 4. IL TESTO PRINCIPALE */}
-      <div className="relative z-10 flex flex-col items-center px-5 text-center mix-blend-plus-lighter">
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="font-display text-[15vw] font-bold leading-none text-white md:text-[10vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)]"
-        >
-          GIUMAL
-        </motion.h1>
+      <div className="relative z-10 flex flex-col items-center px-5 text-center">
+        <div className="bg-black px-8 py-4">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="font-display text-[15vw] font-bold leading-none text-white md:text-[10vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)]"
+          >
+            GIUMAL
+          </motion.h1>
+        </div>
       </div>
     </section>
   );
