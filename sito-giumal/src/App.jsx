@@ -114,6 +114,8 @@ function Hero() {
   const y = useMotionValue(0);
   const [touchPosition, setTouchPosition] = React.useState({ x: 0, y: 0 });
   const [isTouching, setIsTouching] = React.useState(false);
+  const [mouseTrail, setMouseTrail] = React.useState([]);
+  const [randomGlitch, setRandomGlitch] = React.useState(false);
   
   const springX = useSpring(x, { stiffness: 50, damping: 30 });
   const springY = useSpring(y, { stiffness: 50, damping: 30 });
@@ -121,6 +123,17 @@ function Hero() {
   const flareX = useTransform(springX, [-0.5, 0.5], ["-3%", "3%"]);
   const flareY = useTransform(springY, [-0.5, 0.5], ["-15px", "15px"]);
   const flareRotate = useTransform(springX, [-0.5, 0.5], ["-1.5deg", "1.5deg"]);
+
+  // Random glitch effect
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (Math.random() > 0.95) {
+        setRandomGlitch(true);
+        setTimeout(() => setRandomGlitch(false), 150);
+      }
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
 
   function handleMouseMove(e) {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -130,6 +143,12 @@ function Hero() {
     const mouseY = e.clientY - rect.top;
     x.set(mouseX / width - 0.5);
     y.set(mouseY / height - 0.5);
+
+    // Mouse trail
+    setMouseTrail(prev => [
+      { x: e.clientX, y: e.clientY, id: Date.now() },
+      ...prev.slice(0, 20)
+    ]);
   }
 
   function handleTouchStart(e) {
@@ -161,8 +180,9 @@ function Hero() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/10 via-transparent to-transparent"></div>
         
-        {/* Animated gradient orbs */}
+        {/* Animated gradient orbs with parallax */}
         <motion.div 
+          style={{ x: flareX, y: flareY }}
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -175,6 +195,7 @@ function Hero() {
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-[100px]"
         />
         <motion.div 
+          style={{ x: useTransform(springX, [-0.5, 0.5], ["3%", "-3%"]), y: useTransform(springY, [-0.5, 0.5], ["15px", "-15px"]) }}
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.2, 0.4, 0.2],
@@ -186,6 +207,23 @@ function Hero() {
           }}
           className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-600/20 rounded-full blur-[100px]"
         />
+      </div>
+
+      {/* MOUSE TRAIL EFFECT */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {mouseTrail.map((point, i) => (
+          <motion.div
+            key={point.id}
+            initial={{ scale: 1, opacity: 0.6 }}
+            animate={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute w-3 h-3 bg-violet-500/40 rounded-full blur-sm"
+            style={{
+              left: point.x - 6,
+              top: point.y - 6,
+            }}
+          />
+        ))}
       </div>
 
       {/* 2. PARTICLES EFFECT */}
@@ -241,41 +279,69 @@ function Hero() {
 
       {/* 4. IL TESTO PRINCIPALE */}
       <div className="relative z-10 flex flex-col items-center px-5 text-center mix-blend-plus-lighter">
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          whileHover={{
-            x: [0, -10, 10, -10, 10, 0],
-            y: [0, -5, 5, -5, 5, 0],
-            skewX: [0, -5, 5, -5, 5, 0],
-            skewY: [0, -3, 3, -3, 3, 0],
-            scale: [1, 1.05, 0.95, 1.05, 0.95, 1],
-            filter: ["blur(0px)", "blur(3px)", "blur(0px)", "blur(2px)", "blur(0px)"],
-            textShadow: [
-              "0 0 25px rgba(139,92,246,0.3)",
-              "4px 0 rgba(255,0,0,0.9), -4px 0 rgba(0,255,255,0.9)",
-              "0 0 25px rgba(139,92,246,0.3)",
-              "6px 0 rgba(255,0,0,0.7), -6px 0 rgba(0,255,255,0.7)",
-              "0 0 25px rgba(139,92,246,0.3)"
-            ],
-            transition: { duration: 0.25 }
-          }}
-          whileTap={{
-            scale: 0.95,
-            rotate: [0, -5, 5, -5, 5, 0],
-            filter: ["blur(0px)", "blur(5px)", "blur(0px)"],
-            textShadow: [
-              "0 0 25px rgba(139,92,246,0.3)",
-              "8px 0 rgba(255,0,0,1), -8px 0 rgba(0,255,255,1)",
-              "0 0 25px rgba(139,92,246,0.3)"
-            ],
-            transition: { duration: 0.15 }
-          }}
-          className="font-display text-[18vw] font-bold leading-none text-white md:text-[12vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)] cursor-pointer"
+        <motion.div
+          style={{ x: useTransform(springX, [-0.5, 0.5], ["-20px", "20px"]), y: useTransform(springY, [-0.5, 0.5], ["-10px", "10px"]) }}
+          className="relative"
         >
-          GIUMAL
-        </motion.h1>
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+            animate={randomGlitch ? {
+              x: [0, -5, 5, -3, 3, 0],
+              y: [0, -2, 2, -1, 1, 0],
+              skewX: [0, -3, 3, -2, 2, 0],
+              filter: ["blur(0px)", "blur(4px)", "blur(0px)"],
+              textShadow: [
+                "0 0 25px rgba(139,92,246,0.3)",
+                "5px 0 rgba(255,0,0,1), -5px 0 rgba(0,255,255,1)",
+                "0 0 25px rgba(139,92,246,0.3)"
+              ]
+            } : {
+              opacity: 1, 
+              scale: 1, 
+              filter: "blur(0px)",
+              textShadow: [
+                "0 0 25px rgba(139,92,246,0.3)",
+                "0 0 50px rgba(139,92,246,0.5)",
+                "0 0 25px rgba(139,92,246,0.3)"
+              ]
+            }}
+            transition={{ 
+              duration: randomGlitch ? 0.1 : 1, 
+              ease: "easeOut",
+              textShadow: randomGlitch ? {} : { duration: 2, repeat: Infinity, ease: "easeInOut" }
+            }}
+            whileHover={{
+              x: [0, -10, 10, -10, 10, 0],
+              y: [0, -5, 5, -5, 5, 0],
+              skewX: [0, -5, 5, -5, 5, 0],
+              skewY: [0, -3, 3, -3, 3, 0],
+              scale: [1, 1.05, 0.95, 1.05, 0.95, 1],
+              filter: ["blur(0px)", "blur(3px)", "blur(0px)", "blur(2px)", "blur(0px)"],
+              textShadow: [
+                "0 0 25px rgba(139,92,246,0.3)",
+                "4px 0 rgba(255,0,0,0.9), -4px 0 rgba(0,255,255,0.9)",
+                "0 0 25px rgba(139,92,246,0.3)",
+                "6px 0 rgba(255,0,0,0.7), -6px 0 rgba(0,255,255,0.7)",
+                "0 0 25px rgba(139,92,246,0.3)"
+              ],
+              transition: { duration: 0.25 }
+            }}
+            whileTap={{
+              scale: 0.95,
+              rotate: [0, -5, 5, -5, 5, 0],
+              filter: ["blur(0px)", "blur(5px)", "blur(0px)"],
+              textShadow: [
+                "0 0 25px rgba(139,92,246,0.3)",
+                "8px 0 rgba(255,0,0,1), -8px 0 rgba(0,255,255,1)",
+                "0 0 25px rgba(139,92,246,0.3)"
+              ],
+              transition: { duration: 0.15 }
+            }}
+            className="font-display text-[18vw] font-bold leading-none text-white md:text-[12vw] drop-shadow-[0_0_25px_rgba(139,92,246,0.3)] cursor-pointer"
+          >
+            GIUMAL
+          </motion.h1>
+        </motion.div>
       </div>
     </section>
   );
